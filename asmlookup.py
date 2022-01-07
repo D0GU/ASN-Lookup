@@ -1,3 +1,7 @@
+#Made by Julius Estuardo Espat Guzman
+#Because david is lazy
+
+
 import requests
 import json
 from geopy.geocoders import Nominatim
