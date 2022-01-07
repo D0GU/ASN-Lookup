@@ -9,7 +9,7 @@ geolocator = Nominatim(user_agent="geoapiExercises")
 
 def rebuild_database():
     data_json = {}
-    for i in range(3000,3010):
+    for i in range(5000,5010):
         r = requests.get('https://api.asrank.caida.org/v2/restful/asns/' + str(i))
         invalid_json = r.json()
         rjson_str = json.dumps(invalid_json).replace("'","\"")
@@ -24,8 +24,7 @@ def rebuild_database():
             location = geolocator.reverse(str(data_json[rjson['data']['asn']['asn']]['latitude'])+","+str(data_json[rjson['data']['asn']['asn']]['longitude']))
             address = location.raw['address']
             print(address)
-            for k in address:
-                data_json[rjson['data']['asn']['asn']][k] = address[k]
+            data_json[rjson['data']['asn']['asn']]['location'] = address
         except:
             print('No location')
 
@@ -42,11 +41,16 @@ def lookup(query):
         json_content = data.read()
         asn = json.loads(json_content)
         for key in asn:
-            for k in asn[key]:
-                if asn[key][k] == query:
-                    results += 'Location: ' + asn[key][k] + '\n'
-                    with open('results.txt', 'w') as result_file:
-                        result_file.write(results)
+                for l in asn[key]['location']:
+                    if asn[key]['location'][l] == query:
+                        results += 'Company Name: ' + asn[key]['asnName'] + '\n'
+                        results += 'ASN: ' + key + '\n'
+                        for item in asn[key]['location']:
+                            print(item)
+                            results += item + ': ' + asn[key]['location'][item] + '\n'
+                        results += '\n\n'
+                        with open('results.txt', 'w') as result_file:
+                            result_file.write(results)
 
 
 def main():
