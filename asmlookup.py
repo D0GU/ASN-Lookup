@@ -9,7 +9,7 @@ geolocator = Nominatim(user_agent="geoapiExercises")
 
 def rebuild_database():
     data_json = {}
-    for i in range(5000,5010):
+    for i in range(5000,70000):
         r = requests.get('https://api.asrank.caida.org/v2/restful/asns/' + str(i))
         invalid_json = r.json()
         rjson_str = json.dumps(invalid_json).replace("'","\"")
@@ -41,6 +41,7 @@ def lookup(query):
         json_content = data.read()
         asn = json.loads(json_content)
         for key in asn:
+            if 'location' in asn[key]:
                 for l in asn[key]['location']:
                     if asn[key]['location'][l] == query:
                         results += 'Company Name: ' + asn[key]['asnName'] + '\n'
@@ -49,8 +50,9 @@ def lookup(query):
                             print(item)
                             results += item + ': ' + asn[key]['location'][item] + '\n'
                         results += '\n\n'
-                        with open('results.txt', 'w') as result_file:
-                            result_file.write(results)
+        filename = input('Please enter desired filename: ')
+        with open(filename, 'w') as result_file:
+            result_file.write(results)
 
 
 def main():
@@ -64,10 +66,10 @@ def main():
         if ans == '2':
             running2 = True
             while running2:
-                    query = input('Please enter your exact search query: ')
-                    lookup(query)
-                    input('Results written to file.\nPress enter to continue')
-                    running2 = False
+                query = input('Please enter your exact search query: ')
+                lookup(query)
+                input('Results written to file.\nPress enter to continue')
+                running2 = False
 
         else:
             print('Please enter option 1 or 2')
