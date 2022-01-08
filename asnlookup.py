@@ -30,14 +30,14 @@ def rebuild_database():
 
 
 
-    with open('asm_data.json', 'w', encoding = 'utf8') as ye:
+    with open('asn_data.json', 'w', encoding = 'utf8') as ye:
         json.dump(data_json, ye)
 
 
 def lookup(query):
     asn_pack = {}
     results = ''
-    with open('asm_data.json', 'r') as data:
+    with open('asn_data.json', 'r') as data:
         json_content = data.read()
         asn = json.loads(json_content)
         for key in asn:
